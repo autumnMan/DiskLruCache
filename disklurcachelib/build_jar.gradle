@@ -1,0 +1,73 @@
+//import com.android.build.gradle.AppPlugin
+//import com.android.build.gradle.LibraryPlugin
+//import proguard.gradle.ProGuardTask
+
+//dependsOn 可根据实际需要增加或更改
+task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
+
+    baseName = "disk_lru_cache_lib"
+//    appendix = "v"
+    version = "1.0.0"
+    classifier = "release"
+
+    //后缀名
+    extension = "jar"
+    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
+//    archiveName = "PingStartSDK.jar"
+
+    //需打包的资源所在的路径集
+    def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
+    //初始化资源路径集
+    from srcClassDir
+
+    //去除路径集下部分的资源
+//    exclude "com/xxx/adsdk/BuildConfig.class"
+//    exclude "com/xxx/adsdk/BuildConfig\$*.class"
+//    exclude "com/xxx/adsdk/test/**/*.class"
+    exclude "**/BuildConfig.class"
+    exclude "**/BuildConfig\$*.class"
+    exclude "**/R.class"
+    exclude "**/R\$*.class"
+
+    //只导入资源路径集下的部分资源
+//    include "com/xxx/adsdk/**/*.class"
+
+    //注: exclude include 支持可变长参数
+}
+
+//use "gradlew.bat proguardJar" to gene jar
+//task proguardJar(dependsOn: ['buildJar'], type: ProGuardTask) {
+//    //Android 默认的 proguard 文件
+//    configuration android.getDefaultProguardFile('proguard-android.txt')
+//    //manifest 注册的组件对应的 proguard 文件
+//    configuration project.buildDir.absolutePath + "/intermediates/proguard-rules/release/aapt_rules.txt"
+//    configuration 'proguard-rules.pro'
+//
+//    String inJar = buildJar.archivePath.getAbsolutePath()
+//    //输入 jar
+//    injars inJar
+//    //输出 jar
+//    outjars inJar.substring(0, inJar.lastIndexOf( "\\")) + "\\Proguard-${buildJar.archiveName}"
+//
+//    //设置不删除未引用的资源(类，方法等)
+//    dontshrink
+//
+//    Plugin plugin = getPlugins().hasPlugin(AppPlugin) ?
+//            getPlugins().findPlugin(AppPlugin) :
+//            getPlugins().findPlugin(LibraryPlugin)
+//    if (plugin != null) {
+//        List<String> runtimeJarList
+//        if (plugin.getMetaClass().getMetaMethod("getRuntimeJarList")) {
+//            runtimeJarList = plugin.getRuntimeJarList()
+//        } else if (android.getMetaClass().getMetaMethod("getBootClasspath")) {
+//            runtimeJarList = android.getBootClasspath()
+//        } else {
+//            runtimeJarList = plugin.getBootClasspath()
+//        }
+//
+//        for (String runtimeJar : runtimeJarList) {
+//            //给 proguard 添加 runtime
+//            libraryjars(runtimeJar)
+//        }
+//    }
+//}
