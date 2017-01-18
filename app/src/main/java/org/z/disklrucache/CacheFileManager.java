@@ -1,5 +1,6 @@
 package org.z.disklrucache;
 
+import z.disklru.cache.lib.AndroidDiskCacheLog;
 import z.disklru.cache.lib.DiskCache;
 import z.disklru.cache.lib.DiskLruCacheWrapper;
 
@@ -23,7 +24,8 @@ public class CacheFileManager {
 
     public DiskCache getCacheFileWrapper() {
         if (mCacheFileWrapper == null) {
-            mCacheFileWrapper = diskDirCacheMap.getDiskLruCache(App.app.getExternalCacheDir(), 119);//119个字节
+            mCacheFileWrapper = diskDirCacheMap.getDiskLruCache(App.app.getExternalCacheDir(), 119, //119个字节
+                    new AndroidDiskCacheLog());
         }
         return mCacheFileWrapper;
     }
