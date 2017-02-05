@@ -1,11 +1,16 @@
 package z.disklru.cache.lib.core;
 
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 /** Junk drawer of utility methods. */
@@ -45,6 +50,28 @@ final class Util {
             }
             if (!file.delete()) {
                 throw new IOException("failed to delete file: " + file);
+            }
+        }
+    }
+
+    static void appendContent2File(File source, File dest) {
+        if (source.exists()) {
+            Reader reader = null;
+            Writer writer = null;
+            try {
+                reader = new BufferedReader(new FileReader(source));
+                writer = new BufferedWriter(new FileWriter(dest, true));
+                final char[] buf = new char[1024];
+                int r = -1;
+                while ((r = reader.read(buf)) != -1) {
+                    writer.write(buf, 0, r);
+                }
+                writer.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                closeQuietly(reader);
+                closeQuietly(writer);
             }
         }
     }

@@ -43,6 +43,14 @@ public interface DiskCache {
     void put(DiskCacheKey key, Writer writer);
 
     /**
+     * Append content to a key in the cache.
+     * Like {@link #put(DiskCacheKey, Writer)} but this will not override the cache
+     * @param key The key to append to.
+     * @param writer An interface that will write data given an OutputStream for the key.
+     */
+    void appendContent(DiskCacheKey key, Writer writer);
+
+    /**
      * Remove the key and value from the cache.
      *
      * @param key The key to remove.

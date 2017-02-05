@@ -69,6 +69,10 @@ public class DiskLruCacheWrapper implements DiskCache{
 
     @Override
     public void put(DiskCacheKey key, Writer writer) {
+        doWrite(key, writer, false);
+    }
+
+    private void doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
         final String safeKey = key.generateKey();
         writeLocker.acquire(key);
         try {
@@ -78,7 +82,7 @@ public class DiskLruCacheWrapper implements DiskCache{
                 try {
                     File file = editor.getFile(0);
                     if (writer.write(file)) {
-                        editor.commit();
+                        editor.commit(appendOrOverride);
                     }
                 } finally {
                     editor.abortUnlessCommitted();
@@ -94,6 +98,11 @@ public class DiskLruCacheWrapper implements DiskCache{
         } finally {
             writeLocker.release(key);
         }
+    }
+
+    @Override
+    public void appendContent(DiskCacheKey key, Writer writer) {
+        doWrite(key, writer, true);
     }
 
     @Override

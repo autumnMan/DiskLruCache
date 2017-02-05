@@ -482,7 +482,7 @@ public class DiskLruCache  implements Closeable {
         return size;
     }
 
-    private synchronized void completeEdit(Editor editor, boolean success) throws IOException {
+    private synchronized void completeEdit(Editor editor, boolean success, boolean append) throws IOException {
         Entry entry = editor.entry;
         if (entry.currentEditor != editor) {
             throw new IllegalStateException();
@@ -507,7 +507,11 @@ public class DiskLruCache  implements Closeable {
             if (success) {
                 if (dirty.exists()) {
                     File clean = entry.getCleanFile(i);
-                    dirty.renameTo(clean);
+                    if (append) {
+                        appendDirty2Clean(dirty, clean);
+                    } else {
+                        dirty.renameTo(clean);
+                    }
                     long oldLength = entry.lengths[i];
                     long newLength = clean.length();
                     entry.lengths[i] = newLength;
@@ -646,6 +650,10 @@ public class DiskLruCache  implements Closeable {
         return Util.readFully(new InputStreamReader(in, Util.UTF_8));
     }
 
+    private static void appendDirty2Clean(File dirtyFile, File cleanFile) {
+        Util.appendContent2File(dirtyFile, cleanFile);
+    }
+
     /** A snapshot of the values for an entry. */
     public final class Value {
         private final String key;
@@ -756,13 +764,15 @@ public class DiskLruCache  implements Closeable {
         /**
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
+         * @param append true means append content to the final file
+         * @throws IOException
          */
-        public void commit() throws IOException {
+        public void commit(boolean append) throws IOException {
             // The object using this Editor must catch and handle any errors
             // during the write. If there is an error and they call commit
             // anyway, we will assume whatever they managed to write was valid.
             // Normally they should call abort.
-            completeEdit(this, true);
+            completeEdit(this, true, append);
             committed = true;
         }
 
@@ -771,7 +781,7 @@ public class DiskLruCache  implements Closeable {
          * started on the same key.
          */
         public void abort() throws IOException {
-            completeEdit(this, false);
+            completeEdit(this, false, false);
         }
 
         public void abortUnlessCommitted() {
