@@ -39,27 +39,31 @@ public interface DiskCache {
      *
      * @param key The key to write to.
      * @param writer An interface that will write data given an OutputStream for the key.
+     * @return true means  success
      */
-    void put(DiskCacheKey key, Writer writer);
+    boolean put(DiskCacheKey key, Writer writer);
 
     /**
      * Append content to a key in the cache.
      * Like {@link #put(DiskCacheKey, Writer)} but this will not override the cache
      * @param key The key to append to.
      * @param writer An interface that will write data given an OutputStream for the key.
+     * @return true means  success
      */
-    void appendContent(DiskCacheKey key, Writer writer);
+    boolean appendContent(DiskCacheKey key, Writer writer);
 
     /**
      * Remove the key and value from the cache.
      *
      * @param key The key to remove.
+     * @return true means  success
      */
-    void delete(DiskCacheKey key);
+    boolean delete(DiskCacheKey key);
 
     /**
      * Clear the cache.
+     * @return true means  success
      */
-    void clear();
+    boolean clear();
 }
 

@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *  number of threads interested in each lock is updated atomically so that when the count reaches
  *  0, the lock can safely be removed from the map. </p>
  */
-final class DiskCacheWriteLocker {
+final class DlcWriteLocker {
     private final Map<DiskCacheKey, WriteLock> locks = new HashMap<DiskCacheKey, WriteLock>();
     private final WriteLockPool writeLockPool = new WriteLockPool();
 

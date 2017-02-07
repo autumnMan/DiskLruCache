@@ -2,22 +2,21 @@ package z.disklru.cache.lib;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import z.disklru.cache.lib.core.DiskLruCache;
 
 /**
  * 对DiskLruCache进行封装，实现一些自定义操作，例如自定义文件名等
  */
-public class DiskLruCacheWrapper implements DiskCache{
+public class DlcWrapper implements DiskCache{
     private static final String TAG = "DiskLruCacheWrapper";
 
     private static final int APP_VERSION = 1;
     private static final int VALUE_COUNT = 1;
 
-    private final DiskCacheWriteLocker writeLocker = new DiskCacheWriteLocker();
+    private final DlcWriteLocker writeLocker = new DlcWriteLocker();
     private final File directory;
-    private final int maxSize;
+    private final long maxSize;
     private DiskLruCache diskLruCache;
     private DiskCacheLog log;
 
@@ -27,7 +26,7 @@ public class DiskLruCacheWrapper implements DiskCache{
      * @param directory 文件缓存目录
      * @param maxSize 最大缓存大小，单位字节
      */
-    private DiskLruCacheWrapper(File directory, int maxSize, DiskCacheLog logPrinter) {
+    public DlcWrapper(File directory, long maxSize, DiskCacheLog logPrinter) {
         this.directory = directory;
         this.maxSize = maxSize;
         this.log = logPrinter;
@@ -68,11 +67,11 @@ public class DiskLruCacheWrapper implements DiskCache{
     }
 
     @Override
-    public void put(DiskCacheKey key, Writer writer) {
-        doWrite(key, writer, false);
+    public boolean put(DiskCacheKey key, Writer writer) {
+        return doWrite(key, writer, false);
     }
 
-    private void doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
+    private boolean doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
         final String safeKey = key.generateKey();
         writeLocker.acquire(key);
         try {
@@ -83,6 +82,7 @@ public class DiskLruCacheWrapper implements DiskCache{
                     File file = editor.getFile(0);
                     if (writer.write(file)) {
                         editor.commit(appendOrOverride);
+                        return true;
                     }
                 } finally {
                     editor.abortUnlessCommitted();
@@ -98,18 +98,19 @@ public class DiskLruCacheWrapper implements DiskCache{
         } finally {
             writeLocker.release(key);
         }
+        return false;
     }
 
     @Override
-    public void appendContent(DiskCacheKey key, Writer writer) {
-        doWrite(key, writer, true);
+    public boolean appendContent(DiskCacheKey key, Writer writer) {
+        return doWrite(key, writer, true);
     }
 
     @Override
-    public void delete(DiskCacheKey key) {
+    public boolean delete(DiskCacheKey key) {
         final String safeKey = key.generateKey();
         try {
-            getDiskCache().remove(safeKey);
+            return getDiskCache().remove(safeKey);
         } catch (IOException e) {
 //            if (Log.isLoggable(TAG, Log.WARN)) {
 //                Log.w(TAG, "Unable to delete from disk cache", e);
@@ -118,13 +119,15 @@ public class DiskLruCacheWrapper implements DiskCache{
                 log.w(TAG, "Unable to delete from disk cache", e);
             }
         }
+        return false;
     }
 
     @Override
-    public synchronized void clear() {
+    public synchronized boolean clear() {
         try {
             getDiskCache().delete();
             resetDiskCache();
+            return true;
         }  catch (IOException e) {
 //            if (Log.isLoggable(TAG, Log.WARN)) {
 //                Log.w(TAG, "Unable to clear disk cache", e);
@@ -133,46 +136,7 @@ public class DiskLruCacheWrapper implements DiskCache{
                 log.w(TAG, "Unable to clear disk cache", e);
             }
         }
-    }
-
-
-    public static class DiskDirCacheMap {
-        private static DiskDirCacheMap instance;
-
-        private final Map<String, DiskCache> dirCaches;
-
-        private DiskDirCacheMap(Map<String, DiskCache> cacheMap) {
-            dirCaches = cacheMap;
-        }
-
-        public static DiskDirCacheMap get(Map<String, DiskCache> cacheMap) {
-            if (instance == null) {
-                synchronized (DiskDirCacheMap.class) {
-                    if (instance == null) {
-                        instance = new DiskDirCacheMap(cacheMap);
-                    }
-                }
-            }
-            return instance;
-        }
-
-        public synchronized DiskCache getDiskLruCache(File dir, int maxSize) {
-            DiskCache cache = dirCaches.get(dir.getAbsolutePath());
-            if (cache == null) {
-                cache = new DiskLruCacheWrapper(dir, maxSize, null);
-                dirCaches.put(dir.getAbsolutePath(), cache);
-            }
-            return cache;
-        }
-
-        public synchronized DiskCache getDiskLruCache(File dir, int maxSize, DiskCacheLog log) {
-            DiskCache cache = dirCaches.get(dir.getAbsolutePath());
-            if (cache == null) {
-                cache = new DiskLruCacheWrapper(dir, maxSize, log);
-                dirCaches.put(dir.getAbsolutePath(), cache);
-            }
-            return cache;
-        }
+        return false;
     }
 
 }
