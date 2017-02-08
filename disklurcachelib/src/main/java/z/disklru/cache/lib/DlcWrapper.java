@@ -45,7 +45,10 @@ public class DlcWrapper implements DiskCache{
 
     @Override
     public File get(DiskCacheKey key) {
-        final String safeKey = key.generateKey();
+        final String safeKey = Md5Util.toMd5Hex(key);
+        if (log != null) {
+            log.d(TAG, "get disk cache key : " + safeKey);
+        }
         File result = null;
         try {
             //It is possible that the there will be a put in between these two gets. If so that shouldn't be a problem
@@ -72,7 +75,10 @@ public class DlcWrapper implements DiskCache{
     }
 
     private boolean doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
-        final String safeKey = key.generateKey();
+        final String safeKey = Md5Util.toMd5Hex(key);
+        if (log != null) {
+            log.d(TAG, "write with disk cache key : " + safeKey + ", append ? " + appendOrOverride);
+        }
         writeLocker.acquire(key);
         try {
             DiskLruCache.Editor editor = getDiskCache().edit(safeKey);
@@ -108,7 +114,10 @@ public class DlcWrapper implements DiskCache{
 
     @Override
     public boolean delete(DiskCacheKey key) {
-        final String safeKey = key.generateKey();
+        final String safeKey = Md5Util.toMd5Hex(key);
+        if (log != null) {
+            log.d(TAG, "delete disk cache key : " + safeKey);
+        }
         try {
             return getDiskCache().remove(safeKey);
         } catch (IOException e) {
