@@ -9,14 +9,18 @@ public class Md5Util {
     private static final char HEX_DIGITS[] = {'0', '1', '2', '3', '4', '5', '6',
         '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    private static final LruCache<DiskCacheKey, String> lruCache = new LruCache<>(1000);
+    private static final LruCache<String, String> lruCache = new LruCache<>(1000);
 
     private Md5Util(){}
 
-    public static String toMd5Hex(DiskCacheKey key) {
+    public static String toMd5Hex(String origin) {
+        if (origin == null) {
+            return "";
+        }
+
         String result = null;
         synchronized (lruCache) {
-            result = lruCache.get(key);
+            result = lruCache.get(origin);
         }
         if (result != null) {
             return result;
@@ -24,15 +28,15 @@ public class Md5Util {
 
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update(key.generateKey().getBytes());
+            messageDigest.update(origin.getBytes());
 
             result = bufferToHex(messageDigest.digest());
             synchronized (lruCache) {
-                lruCache.put(key, result);
+                lruCache.put(origin, result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = key.generateKey();
+            result = origin;
         }
         return result;
     }

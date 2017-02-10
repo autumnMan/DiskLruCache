@@ -45,7 +45,7 @@ public class DlcWrapper implements DiskCache{
 
     @Override
     public File get(DiskCacheKey key) {
-        final String safeKey = Md5Util.toMd5Hex(key);
+        final String safeKey = key.generateKey();
         if (log != null) {
             log.d(TAG, "get disk cache key : " + safeKey);
         }
@@ -75,7 +75,7 @@ public class DlcWrapper implements DiskCache{
     }
 
     private boolean doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
-        final String safeKey = Md5Util.toMd5Hex(key);
+        final String safeKey = key.generateKey();
         if (log != null) {
             log.d(TAG, "write with disk cache key : " + safeKey + ", append ? " + appendOrOverride);
         }
@@ -114,7 +114,7 @@ public class DlcWrapper implements DiskCache{
 
     @Override
     public boolean delete(DiskCacheKey key) {
-        final String safeKey = Md5Util.toMd5Hex(key);
+        final String safeKey = key.generateKey();
         if (log != null) {
             log.d(TAG, "delete disk cache key : " + safeKey);
         }
