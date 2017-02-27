@@ -2,7 +2,7 @@ package org.z.disklrucache.writer;
 
 import java.io.Closeable;
 
-import z.disklru.cache.lib.DiskCache;
+import z.disklru.cache.lib.inter.DiskCache;
 
 /**
  * Created by zwh on 2017/1/18.

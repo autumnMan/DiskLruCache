@@ -42,7 +42,7 @@ public class Md5Util {
     }
 
     private static String bufferToHex(byte[] bytes) {
-        final StringBuffer strHexString = new StringBuffer();
+        final StringBuilder strHexString = new StringBuilder();
         for (byte b : bytes) {
             strHexString.append(HEX_DIGITS[(b & 0xf0) >> 4]);
             strHexString.append(HEX_DIGITS[b & 0xf]);

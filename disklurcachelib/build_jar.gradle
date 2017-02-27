@@ -3,7 +3,7 @@ task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
 
     baseName = "disk_lru_cache_lib"
 //    appendix = "v"
-    version = "1.0.1"
+    version = APP_VERSION_NAME as String
     classifier = "release"
 
     //后缀名
@@ -38,10 +38,10 @@ task buildProguardJar(dependsOn: ['assembleRelease'], type: Copy) {
     def srcClassDir = project.buildDir.absolutePath + "/intermediates/bundles/release/classes.jar";
     //初始化资源路径集
     from srcClassDir
-    def v = "1.0.1"
+    def v = APP_VERSION_NAME as String
     def savePath = project.projectDir.absolutePath + "\\lib_v" + v
     into savePath
     rename {
-        "disk_lru_cache_lib-v" + v + "-proguared.jar"
+        "disk_lru_cache_lib-v" + v + "-proguarded.jar"
     }
 }

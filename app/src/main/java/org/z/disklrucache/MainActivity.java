@@ -1,6 +1,5 @@
 package org.z.disklrucache;
 
-import z.disklru.cache.lib.DiskCache;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +8,10 @@ import android.os.Message;
 import android.widget.Toast;
 
 import org.z.disklrucache.writer.CacheStringWriter;
+
+import z.disklru.cache.lib.AndroidDiskCacheLog;
+import z.disklru.cache.lib.DlcWrapper;
+import z.disklru.cache.lib.inter.DiskCache;
 
 public class MainActivity extends Activity {
     private final int TESTING = 1;
@@ -48,8 +51,9 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 mHandler.sendEmptyMessage(TESTING);
-                DiskCache diskCache = CacheFileManager.get().getCacheFileWrapper();
-                DiskCache.Writer writer = new CacheStringWriter("Hello world!");
+                DiskCache diskCache = new DlcWrapper(App.app.getExternalCacheDir(), 119, //119个字节
+                        new AndroidDiskCacheLog());
+                CacheStringWriter writer = new CacheStringWriter("Hello world!");
                 //每次写入12个字节，总共写入120个字节，10个文件，但是限制了总大小为119个字节
                 //所以最终应该写入9个文件
                 for (int i = 0; i < 10; ++i) {

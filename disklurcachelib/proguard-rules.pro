@@ -37,6 +37,10 @@
     <init>(...);
 }
 
+-keep class z.disklru.cache.lib.Md5Util{
+    public <methods>;
+}
+
 -keep class z.disklru.cache.lib.LruCache {
     <init>(...);
     public protected <methods>;

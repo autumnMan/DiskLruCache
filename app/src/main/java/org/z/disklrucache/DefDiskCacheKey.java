@@ -1,6 +1,7 @@
 package org.z.disklrucache;
 
-import z.disklru.cache.lib.DiskCacheKey;
+import z.disklru.cache.lib.Md5Util;
+import z.disklru.cache.lib.inter.DiskCacheKey;
 
 /**
  * 默认的缓存文件名
@@ -14,7 +15,8 @@ public class DefDiskCacheKey implements DiskCacheKey {
 
     @Override
     public String generateKey() {
-        return ori;
+        //避免中文乱码
+        return Md5Util.toMd5Hex(ori);
     }
 
     @Override
