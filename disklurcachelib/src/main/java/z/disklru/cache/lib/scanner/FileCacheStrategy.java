@@ -3,7 +3,8 @@ package z.disklru.cache.lib.scanner;
 import java.io.File;
 
 /**
- * Created by Mr-Z on 2017/2/25.
+ * 文件缓存策略，可自定义文件的重要级别，越重要的就放在越后面；
+ * 如果两个文件的重要性相同，那就按照文件大小来排序，文件大小越小的就放在越后面
  */
 public interface FileCacheStrategy {
     byte VERY_IMPORTANT = 1;

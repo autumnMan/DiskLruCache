@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.IOException;
 
 import z.disklru.cache.lib.core.DiskLruCache;
+import z.disklru.cache.lib.inter.DiskCache;
+import z.disklru.cache.lib.inter.DiskCacheKey;
+import z.disklru.cache.lib.inter.DiskCacheLog;
 
 /**
  * 对DiskLruCache进行封装，实现一些自定义操作，例如自定义文件名等
  */
-public class DlcWrapper implements DiskCache{
+public class DlcWrapper implements DiskCache {
     private static final String TAG = "DiskLruCacheWrapper";
 
     private static final int APP_VERSION = 1;

@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.inter;
 
 /**
  * 保存缓存文件对应的key，一般就是文件名作为key

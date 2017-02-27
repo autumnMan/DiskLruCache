@@ -2,6 +2,8 @@ package z.disklru.cache.lib;
 
 import android.util.Log;
 
+import z.disklru.cache.lib.inter.DiskCacheLog;
+
 public class AndroidDiskCacheLog implements DiskCacheLog {
 
     @Override

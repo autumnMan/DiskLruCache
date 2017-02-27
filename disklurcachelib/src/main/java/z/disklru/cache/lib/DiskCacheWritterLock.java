@@ -7,6 +7,8 @@ import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import z.disklru.cache.lib.inter.DiskCacheKey;
+
 /**
  * Keeps a map of keys to locks that allows locks to be removed from the map when no longer in use
  * so the size of the collection is bounded.

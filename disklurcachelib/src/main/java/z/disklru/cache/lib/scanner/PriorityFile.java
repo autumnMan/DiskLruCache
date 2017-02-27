@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Created by Mr-Z on 2017/2/25.
  */
-class PriorityFile implements Comparable<PriorityFile>{
+final class PriorityFile implements Comparable<PriorityFile>{
     private File file;
     private FileCacheStrategy fileStrategy;
 
@@ -51,7 +51,7 @@ class PriorityFile implements Comparable<PriorityFile>{
         final StringBuilder builder = new StringBuilder(64);
         builder.append(file.getAbsolutePath());
         builder.append(" -- ").append("file size: ").append(fileSize());
-        builder.append(" -- ").append(" level : ").append(fileStrategy.importantLevel(file));
+        builder.append(" -- ").append(" level : ").append(importantLevel());
         return builder.toString();
     }
 }

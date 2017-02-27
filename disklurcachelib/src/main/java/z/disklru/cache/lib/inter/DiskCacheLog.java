@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.inter;
 
 public interface DiskCacheLog {
     void v(String tag, String msg);

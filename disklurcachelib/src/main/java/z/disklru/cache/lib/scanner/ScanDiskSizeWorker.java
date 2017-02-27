@@ -8,17 +8,17 @@ import java.util.PriorityQueue;
 /**
  * Created by Mr-Z on 2017/2/25.
  */
-class ScanDiskSizeWorker implements Runnable{
+public class ScanDiskSizeWorker implements Runnable{
     private File mDir;
     private int mMaxSize;
     private static PriorityQueue<PriorityFile> priorityQueue = new PriorityQueue<PriorityFile>();
     private FileCacheStrategy mFileStrategy;
 
-    ScanDiskSizeWorker(String cacheDir, int maxSize) {
+    public ScanDiskSizeWorker(String cacheDir, int maxSize) {
         this(cacheDir, maxSize, null);
     }
 
-    ScanDiskSizeWorker(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
+    public ScanDiskSizeWorker(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
         mDir = new File(cacheDir);
         mMaxSize = maxSize;
         mFileStrategy = fileStrategy == null ? new DefFileStrategy() : fileStrategy;

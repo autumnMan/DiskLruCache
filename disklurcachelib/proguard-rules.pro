@@ -15,3 +15,44 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontpreverify
+-dontoptimize
+-useuniqueclassmembernames
+-ignorewarnings
+-dontusemixedcaseclassnames
+-dontshrink
+
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *JavascriptInterface*
+-keepattributes Signature
+
+-keepparameternames
+
+-keep class z.disklru.cache.lib.inter.**
+
+-keep interface z.disklru.cache.lib.scanner.**{*;}
+
+-keep class z.disklru.cache.lib.scanner.ScanDiskSizeWorker {
+    <init>(...);
+}
+
+-keep class z.disklru.cache.lib.LruCache {
+    <init>(...);
+    public protected <methods>;
+}
+
+-keep class * implements z.disklru.cache.lib.inter.DiskCache {
+    <init>(...);
+    public protected *;
+}
+
+-keep class * implements z.disklru.cache.lib.inter.DiskCacheKey {
+    <init>(...);
+    public protected *;
+}
+
+-keep class * implements z.disklru.cache.lib.inter.DiskCacheLog {
+    <init>(...);
+    public protected *;
+}

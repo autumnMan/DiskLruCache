@@ -1,5 +1,7 @@
 package z.disklru.cache.lib;
 
+import z.disklru.cache.lib.inter.DiskCacheKey;
+
 /**
  * default disk cache key
  */

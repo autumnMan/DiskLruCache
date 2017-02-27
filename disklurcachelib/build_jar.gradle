@@ -1,7 +1,3 @@
-//import com.android.build.gradle.AppPlugin
-//import com.android.build.gradle.LibraryPlugin
-//import proguard.gradle.ProGuardTask
-
 //dependsOn 可根据实际需要增加或更改
 task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
 
@@ -33,41 +29,19 @@ task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
 //    include "com/xxx/adsdk/**/*.class"
 
     //注: exclude include 支持可变长参数
+    def savePath = project.projectDir.absolutePath + "\\lib_v" + version
+    setDestinationDir(new File(savePath))
 }
 
-//use "gradlew.bat proguardJar" to gene jar
-//task proguardJar(dependsOn: ['buildJar'], type: ProGuardTask) {
-//    //Android 默认的 proguard 文件
-//    configuration android.getDefaultProguardFile('proguard-android.txt')
-//    //manifest 注册的组件对应的 proguard 文件
-//    configuration project.buildDir.absolutePath + "/intermediates/proguard-rules/release/aapt_rules.txt"
-//    configuration 'proguard-rules.pro'
-//
-//    String inJar = buildJar.archivePath.getAbsolutePath()
-//    //输入 jar
-//    injars inJar
-//    //输出 jar
-//    outjars inJar.substring(0, inJar.lastIndexOf( "\\")) + "\\Proguard-${buildJar.archiveName}"
-//
-//    //设置不删除未引用的资源(类，方法等)
-//    dontshrink
-//
-//    Plugin plugin = getPlugins().hasPlugin(AppPlugin) ?
-//            getPlugins().findPlugin(AppPlugin) :
-//            getPlugins().findPlugin(LibraryPlugin)
-//    if (plugin != null) {
-//        List<String> runtimeJarList
-//        if (plugin.getMetaClass().getMetaMethod("getRuntimeJarList")) {
-//            runtimeJarList = plugin.getRuntimeJarList()
-//        } else if (android.getMetaClass().getMetaMethod("getBootClasspath")) {
-//            runtimeJarList = android.getBootClasspath()
-//        } else {
-//            runtimeJarList = plugin.getBootClasspath()
-//        }
-//
-//        for (String runtimeJar : runtimeJarList) {
-//            //给 proguard 添加 runtime
-//            libraryjars(runtimeJar)
-//        }
-//    }
-//}
+task buildProguardJar(dependsOn: ['assembleRelease'], type: Copy) {
+    //需打包的资源所在的路径集
+    def srcClassDir = project.buildDir.absolutePath + "/intermediates/bundles/release/classes.jar";
+    //初始化资源路径集
+    from srcClassDir
+    def v = "1.0.1"
+    def savePath = project.projectDir.absolutePath + "\\lib_v" + v
+    into savePath
+    rename {
+        "disk_lru_cache_lib-v" + v + "-proguared.jar"
+    }
+}
