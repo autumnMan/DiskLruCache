@@ -5,24 +5,39 @@ import java.io.FilenameFilter;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
+import z.disklru.cache.lib.scanner.file.PriorityFile;
+import z.disklru.cache.lib.scanner.strategy.DefFileStrategy;
+import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
+
 /**
  * Created by Mr-Z on 2017/2/25.
  */
-public class ScanDiskSizeWorker implements Runnable{
+public abstract class AbsScanner implements Runnable{
     private File mDir;
     private int mMaxSize;
-    private static PriorityQueue<PriorityFile> priorityQueue = new PriorityQueue<PriorityFile>();
+    private PriorityQueue<PriorityFile> priorityQueue;
     private FileCacheStrategy mFileStrategy;
 
-    public ScanDiskSizeWorker(String cacheDir, int maxSize) {
-        this(cacheDir, maxSize, null);
+    public AbsScanner(String cacheDir, int maxSize) {
+        this(cacheDir, maxSize, null, null);
     }
 
-    public ScanDiskSizeWorker(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
+    public AbsScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
+        this(cacheDir, maxSize, fileStrategy, null);
+    }
+
+    public AbsScanner(String cacheDir, int maxSize, PriorityQueue<PriorityFile> queue) {
+        this(cacheDir, maxSize, null, queue);
+    }
+
+    public AbsScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy, PriorityQueue<PriorityFile> queue) {
         mDir = new File(cacheDir);
         mMaxSize = maxSize;
         mFileStrategy = fileStrategy == null ? new DefFileStrategy() : fileStrategy;
+        priorityQueue = queue == null ? new PriorityQueue<PriorityFile>() : queue;
     }
+
+    public abstract PriorityFile createPriorityFile(File file, FileCacheStrategy fileCacheStrategy);
 
     @Override
     public void run() {
@@ -39,7 +54,7 @@ public class ScanDiskSizeWorker implements Runnable{
 
             if (files != null && files.length > 0) {
                 for (File f : files) {
-                    priorityQueue.offer(new PriorityFile(f, mFileStrategy));
+                    priorityQueue.offer(createPriorityFile(f, mFileStrategy));
                 }
             }
 

@@ -1,4 +1,4 @@
-package z.disklru.cache.lib.scanner;
+package z.disklru.cache.lib.scanner.strategy;
 
 import java.io.File;
 

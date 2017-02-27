@@ -33,8 +33,9 @@
 
 -keep interface z.disklru.cache.lib.scanner.**{*;}
 
--keep class z.disklru.cache.lib.scanner.ScanDiskSizeWorker {
-    <init>(...);
+-keep class z.disklru.cache.lib.scanner.** {
+    public <fields>;
+    public <methods>;
 }
 
 -keep class z.disklru.cache.lib.Md5Util{
