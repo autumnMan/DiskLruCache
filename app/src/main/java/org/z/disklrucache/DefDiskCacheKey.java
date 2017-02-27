@@ -16,4 +16,21 @@ public class DefDiskCacheKey implements DiskCacheKey {
     public String generateKey() {
         return ori;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean equ = false;
+        if (o != null && o.getClass().getName().equals(this.getClass().getName())) {
+            equ = ori.equals(((DefDiskCacheKey) o).ori);
+        }
+        return equ;
+    }
+
+    @Override
+    public int hashCode() {
+        if (ori != null) {
+            return ori.hashCode();
+        }
+        return super.hashCode();
+    }
 }

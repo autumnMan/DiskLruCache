@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
                 //每次写入12个字节，总共写入120个字节，10个文件，但是限制了总大小为119个字节
                 //所以最终应该写入9个文件
                 for (int i = 0; i < 10; ++i) {
-                    diskCache.put(new DefDiskCacheKey("test_" + i), writer);
+                    diskCache.put(new DefDiskCacheKey("test"), writer);
                 }
                 mHandler.sendEmptyMessage(TEST_FINISHED);
             }

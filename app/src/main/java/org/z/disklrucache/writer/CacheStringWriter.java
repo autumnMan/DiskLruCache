@@ -19,7 +19,7 @@ public class CacheStringWriter extends BaseCacheWriter {
     public boolean write(File file) {
         OutputStream os = null;
         try {
-            os = new BufferedOutputStream(new FileOutputStream(file));
+            os = new BufferedOutputStream(new FileOutputStream(file, true));
             os.write(msg.getBytes());
             os.flush();
         } catch (Exception e) {
