@@ -59,25 +59,31 @@ public abstract class AbsScanner implements Runnable{
             }
 
             if (!priorityQueue.isEmpty()) {
-                //开始检查所有文件的总大小
-                final Iterator<PriorityFile> iterator = priorityQueue.iterator();
-                long size = 0;
-                while (iterator.hasNext()) {
-                    size += iterator.next().fileSize();
-                }
-
-                PriorityFile tmpFile = null;
-                while (size > mMaxSize) {
-                    //文件的总大小超出范围，则从头开始删除
-                    tmpFile = priorityQueue.poll();
-                    size -= tmpFile.fileSize();
-                    tmpFile.deleteFile();
-                }
+                tryToClean();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            priorityQueue.clear();
         }
 
+    }
+
+    protected void tryToClean() {
+        //开始检查所有文件的总大小
+        final Iterator<PriorityFile> iterator = priorityQueue.iterator();
+        long size = 0;
+        while (iterator.hasNext()) {
+            size += iterator.next().fileSize();
+        }
+
+        PriorityFile tmpFile = null;
+        while (size > mMaxSize) {
+            //文件的总大小超出范围，则从头开始删除
+            tmpFile = priorityQueue.poll();
+            size -= tmpFile.fileSize();
+            tmpFile.deleteFile();
+        }
     }
 
 }

@@ -11,31 +11,9 @@ import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
  * 3、优先按文件重要性排序，文件重要性相同的就按规则2排序<br/>
  */
 public class LengthLevelFile extends PriorityFile{
-    private File file;
-    private FileCacheStrategy fileStrategy;
-    private int cacheLevel = Integer.MIN_VALUE;
 
     public LengthLevelFile(File file, FileCacheStrategy fileStrategy) {
-        this.file = file;
-        this.fileStrategy = fileStrategy;
-    }
-
-    @Override
-    public long fileSize() {
-        return file.length();
-    }
-
-    @Override
-    public void deleteFile() {
-        file.delete();
-    }
-
-    public int importantLevel() {
-        if (cacheLevel == Integer.MIN_VALUE) {
-            //增加缓存，避免重复计算
-            cacheLevel = fileStrategy.importantLevel(file);
-        }
-        return cacheLevel;
+        super(file, fileStrategy);
     }
 
     @Override
