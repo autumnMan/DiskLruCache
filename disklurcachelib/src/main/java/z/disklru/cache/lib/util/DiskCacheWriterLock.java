@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.util;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -9,19 +9,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import z.disklru.cache.lib.inter.DiskCacheKey;
 
-/**
- * Keeps a map of keys to locks that allows locks to be removed from the map when no longer in use
- * so the size of the collection is bounded.
- *
- * <p> This class will be accessed by multiple threads in a thread pool and ensures that the
- *  number of threads interested in each lock is updated atomically so that when the count reaches
- *  0, the lock can safely be removed from the map. </p>
- */
-final class DlcWriteLocker {
+public class DiskCacheWriterLock {
     private final Map<DiskCacheKey, WriteLock> locks = new HashMap<DiskCacheKey, WriteLock>();
     private final WriteLockPool writeLockPool = new WriteLockPool();
 
-    void acquire(DiskCacheKey key) {
+    public void acquire(DiskCacheKey key) {
         WriteLock writeLock;
         synchronized (this) {
             writeLock = locks.get(key);
@@ -35,7 +27,7 @@ final class DlcWriteLocker {
         writeLock.lock.lock();
     }
 
-    void release(DiskCacheKey key) {
+    public void release(DiskCacheKey key) {
         WriteLock writeLock;
         synchronized (this) {
             writeLock = locks.get(key);
@@ -88,4 +80,5 @@ final class DlcWriteLocker {
             }
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import z.disklru.cache.lib.core.DiskLruCache;
 import z.disklru.cache.lib.inter.DiskCache;
 import z.disklru.cache.lib.inter.DiskCacheKey;
 import z.disklru.cache.lib.inter.DiskCacheLog;
+import z.disklru.cache.lib.inter.DiskCacheWriter;
+import z.disklru.cache.lib.util.DiskCacheWriterLock;
 
 /**
  * 对DiskLruCache进行封装，实现一些自定义操作，例如自定义文件名等
@@ -17,7 +19,7 @@ public class DlcWrapper implements DiskCache {
     private static final int APP_VERSION = 1;
     private static final int VALUE_COUNT = 1;
 
-    private final DlcWriteLocker writeLocker = new DlcWriteLocker();
+    private final DiskCacheWriterLock writeLocker = new DiskCacheWriterLock();
     private final File directory;
     private final long maxSize;
     private DiskLruCache diskLruCache;
@@ -73,11 +75,11 @@ public class DlcWrapper implements DiskCache {
     }
 
     @Override
-    public boolean put(DiskCacheKey key, Writer writer) {
+    public boolean put(DiskCacheKey key, DiskCacheWriter writer) {
         return doWrite(key, writer, false);
     }
 
-    private boolean doWrite(DiskCacheKey key, Writer writer, boolean appendOrOverride) {
+    private boolean doWrite(DiskCacheKey key, DiskCacheWriter writer, boolean appendOrOverride) {
         final String safeKey = key.generateKey();
         if (log != null) {
             log.d(TAG, "write with disk cache key : " + safeKey + ", append ? " + appendOrOverride);
@@ -111,7 +113,7 @@ public class DlcWrapper implements DiskCache {
     }
 
     @Override
-    public boolean appendContent(DiskCacheKey key, Writer writer) {
+    public boolean appendContent(DiskCacheKey key, DiskCacheWriter writer) {
         return doWrite(key, writer, true);
     }
 

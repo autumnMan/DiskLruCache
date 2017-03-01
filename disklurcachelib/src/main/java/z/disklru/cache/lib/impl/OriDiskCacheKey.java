@@ -1,6 +1,7 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.impl;
 
 import z.disklru.cache.lib.inter.DiskCacheKey;
+import z.disklru.cache.lib.util.Md5Util;
 
 /**
  * default disk cache key
@@ -14,7 +15,8 @@ public class OriDiskCacheKey implements DiskCacheKey {
 
     @Override
     public String generateKey() {
-        return mOriginKey;
+        //避免中文乱码
+        return Md5Util.toMd5Hex(mOriginKey);
     }
 
     @Override

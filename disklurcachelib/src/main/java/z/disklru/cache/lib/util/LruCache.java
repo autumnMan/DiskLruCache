@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

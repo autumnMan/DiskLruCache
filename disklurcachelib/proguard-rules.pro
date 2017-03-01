@@ -29,35 +29,28 @@
 
 -keepparameternames
 
--keep class z.disklru.cache.lib.inter.**
+-keep interface z.disklru.cache.lib.**{*;}
 
--keep interface z.disklru.cache.lib.scanner.**{*;}
-
--keep class z.disklru.cache.lib.scanner.** {
-    public <fields>;
-    public <methods>;
-}
-
--keep class z.disklru.cache.lib.Md5Util{
-    public <methods>;
-}
-
--keep class z.disklru.cache.lib.LruCache {
+-keep abstract class z.disklru.cache.lib.** {
     <init>(...);
+    public protected <fields>;
     public protected <methods>;
 }
 
--keep class * implements z.disklru.cache.lib.inter.DiskCache {
+-keep class z.disklru.cache.lib.impl.**{
     <init>(...);
-    public protected *;
+    public protected <fields>;
+    public protected <methods>;
 }
 
--keep class * implements z.disklru.cache.lib.inter.DiskCacheKey {
+-keep class z.disklru.cache.lib.scanner.** {
     <init>(...);
-    public protected *;
+    public protected <fields>;
+    public protected <methods>;
 }
 
--keep class * implements z.disklru.cache.lib.inter.DiskCacheLog {
+-keep class z.disklru.cache.lib.util.** {
     <init>(...);
-    public protected *;
+    public protected <fields>;
+    public protected <methods>;
 }

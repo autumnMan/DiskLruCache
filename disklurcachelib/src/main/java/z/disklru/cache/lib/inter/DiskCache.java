@@ -8,19 +8,6 @@ import java.io.File;
  */
 public interface DiskCache {
     /**
-     * An interface to actually write data to a key in the disk cache.
-     */
-    interface Writer {
-        /**
-         * Writes data to the file and returns true if the write was successful and should be committed, and
-         * false if the write should be aborted.
-         *
-         * @param file The File the Writer should write to.
-         */
-        boolean write(File file);
-    }
-
-    /**
      * Get the cache for the value at the given key.
      *
      * <p>
@@ -34,23 +21,23 @@ public interface DiskCache {
     File get(DiskCacheKey key);
 
     /**
-     * Write to a key in the cache. {@link Writer} is used so that the cache implementation can perform actions after
+     * Write to a key in the cache. {@link DiskCacheWriter} is used so that the cache implementation can perform actions after
      * the write finishes, like commit (via atomic file rename).
      *
      * @param key The key to write to.
      * @param writer An interface that will write data given an OutputStream for the key.
      * @return true means  success
      */
-    boolean put(DiskCacheKey key, Writer writer);
+    boolean put(DiskCacheKey key, DiskCacheWriter writer);
 
     /**
      * Append content to a key in the cache.
-     * Like {@link #put(DiskCacheKey, Writer)} but this will not override the cache
+     * Like {@link #put(DiskCacheKey, DiskCacheWriter)} but this will not override the cache
      * @param key The key to append to.
      * @param writer An interface that will write data given an OutputStream for the key.
      * @return true means  success
      */
-    boolean appendContent(DiskCacheKey key, Writer writer);
+    boolean appendContent(DiskCacheKey key, DiskCacheWriter writer);
 
     /**
      * Remove the key and value from the cache.

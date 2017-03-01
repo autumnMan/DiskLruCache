@@ -1,4 +1,4 @@
-package z.disklru.cache.lib;
+package z.disklru.cache.lib.impl;
 
 import android.util.Log;
 
