@@ -1,15 +1,15 @@
 //dependsOn 可根据实际需要增加或更改
 task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
 
-    baseName = "disk_lru_cache_lib"
+//    baseName = "disk_lru_cache_lib"
 //    appendix = "v"
-    version = APP_VERSION_NAME as String
-    classifier = "release"
-
-    //后缀名
-    extension = "jar"
+//    version = APP_VERSION_NAME as String
+//    classifier = "release"
+//
+//    //后缀名
+//    extension = "jar"
     //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
-//    archiveName = "PingStartSDK.jar"
+    archiveName = "disk_lru_cache_lib_${APP_VERSION_NAME}.jar"
 
     //需打包的资源所在的路径集
     def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
@@ -29,7 +29,7 @@ task buildJar(dependsOn: ['assembleRelease'], type: Jar) {
 //    include "com/xxx/adsdk/**/*.class"
 
     //注: exclude include 支持可变长参数
-    def savePath = project.projectDir.absolutePath + "\\lib_v" + version
+    def savePath = project.projectDir.absolutePath + "\\lib_v${APP_VERSION_NAME}"
     setDestinationDir(new File(savePath))
 }
 

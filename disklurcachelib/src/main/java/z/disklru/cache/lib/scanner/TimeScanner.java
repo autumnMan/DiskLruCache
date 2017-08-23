@@ -6,15 +6,16 @@ import java.util.PriorityQueue;
 import z.disklru.cache.lib.scanner.file.PriorityFile;
 import z.disklru.cache.lib.scanner.file.TimeLevelFile;
 import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
+import z.disklru.cache.lib.scanner.strategy.FileSizeOverFlowStrategy;
 
 /**
  * Created by Administrator on 2017/2/27.
  */
-public class TimeSanner extends AbsScanner{
+public class TimeScanner extends AbsScanner{
     private static PriorityQueue<PriorityFile> priorityQueue = new PriorityQueue<>();
 
-    public TimeSanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
-        super(cacheDir, maxSize, fileStrategy, priorityQueue);
+    public TimeScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy, FileSizeOverFlowStrategy fileSizeOverFlowStrategy) {
+        super(cacheDir, maxSize, fileStrategy, fileSizeOverFlowStrategy, priorityQueue);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import z.disklru.cache.lib.scanner.file.PriorityFile;
 import z.disklru.cache.lib.scanner.file.TimeLevelFile;
 import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
+import z.disklru.cache.lib.scanner.strategy.FileSizeOverFlowStrategy;
 
 /**
  * 基于文件夹内的文件个数进行限制，以时间和重要性作为排序依据，文件个数超出限制后将进行清理
@@ -15,8 +16,8 @@ public class NumberScanner extends AbsScanner{
 
     private int totalNumber;
 
-    public NumberScanner(String cacheDir, int totalNumber, FileCacheStrategy fileStrategy) {
-        super(cacheDir, 0, fileStrategy, priorityQueue);
+    public NumberScanner(String cacheDir, int totalNumber, FileCacheStrategy fileStrategy, FileSizeOverFlowStrategy fileSizeOverFlowStrategy) {
+        super(cacheDir, 0, fileStrategy, fileSizeOverFlowStrategy, priorityQueue);
         this.totalNumber = totalNumber;
     }
 

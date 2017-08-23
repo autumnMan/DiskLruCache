@@ -11,7 +11,7 @@ public interface FileCacheStrategy {
 
     byte IMPORTANT = 2;
 
-    byte DO_NOT_CARE = 3;
+    byte NORMAL = 3;
 
     int importantLevel(File file);
 }

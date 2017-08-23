@@ -6,34 +6,39 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import z.disklru.cache.lib.scanner.file.PriorityFile;
+import z.disklru.cache.lib.scanner.strategy.DefFileSizeOverFlowStrategy;
 import z.disklru.cache.lib.scanner.strategy.DefFileStrategy;
 import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
+import z.disklru.cache.lib.scanner.strategy.FileSizeOverFlowStrategy;
 
 /**
  * Created by Mr-Z on 2017/2/25.
  */
 public abstract class AbsScanner implements Runnable{
-    private File mDir;
-    private int mMaxSize;
-    private PriorityQueue<PriorityFile> priorityQueue;
-    private FileCacheStrategy mFileStrategy;
+    private final File mDir;
+    private final long mMaxSize;
+    private final PriorityQueue<PriorityFile> priorityQueue;
+    private final FileCacheStrategy mFileStrategy;
+    private final FileSizeOverFlowStrategy mFileSizeOverFlowStrategy;
 
-    public AbsScanner(String cacheDir, int maxSize) {
-        this(cacheDir, maxSize, null, null);
+    public AbsScanner(String cacheDir, long maxSize) {
+        this(cacheDir, maxSize, null, null, null);
     }
 
-    public AbsScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
-        this(cacheDir, maxSize, fileStrategy, null);
+    public AbsScanner(String cacheDir, long maxSize, FileCacheStrategy fileStrategy) {
+        this(cacheDir, maxSize, fileStrategy, null, null);
     }
 
-    public AbsScanner(String cacheDir, int maxSize, PriorityQueue<PriorityFile> queue) {
-        this(cacheDir, maxSize, null, queue);
+    public AbsScanner(String cacheDir, long maxSize, PriorityQueue<PriorityFile> queue) {
+        this(cacheDir, maxSize, null, null, queue);
     }
 
-    public AbsScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy, PriorityQueue<PriorityFile> queue) {
+    public AbsScanner(String cacheDir, long maxSize, FileCacheStrategy fileStrategy,
+                      FileSizeOverFlowStrategy fileSizeOverFlowStrategy, PriorityQueue<PriorityFile> queue) {
         mDir = new File(cacheDir);
         mMaxSize = maxSize;
         mFileStrategy = fileStrategy == null ? new DefFileStrategy() : fileStrategy;
+        mFileSizeOverFlowStrategy = fileSizeOverFlowStrategy == null ? new DefFileSizeOverFlowStrategy() : fileSizeOverFlowStrategy;
         priorityQueue = queue == null ? new PriorityQueue<PriorityFile>() : queue;
     }
 
@@ -72,13 +77,19 @@ public abstract class AbsScanner implements Runnable{
     protected void tryToClean() {
         //开始检查所有文件的总大小
         final Iterator<PriorityFile> iterator = priorityQueue.iterator();
+        final long percent80 = mMaxSize * 8 / 10;
         long size = 0;
         while (iterator.hasNext()) {
             size += iterator.next().fileSize();
         }
 
+        if (size >= percent80 && mFileSizeOverFlowStrategy != null) {
+            //文件夹的大小达到限制大小的80%时，可以先做一些额外处理来降低文件夹大小
+            size = mFileSizeOverFlowStrategy.onOverFlow(size, percent80, mDir.getAbsolutePath(), priorityQueue);
+        }
+
         PriorityFile tmpFile = null;
-        while (size > mMaxSize) {
+        while (size >= mMaxSize) {
             //文件的总大小超出范围，则从头开始删除
             tmpFile = priorityQueue.poll();
             size -= tmpFile.fileSize();

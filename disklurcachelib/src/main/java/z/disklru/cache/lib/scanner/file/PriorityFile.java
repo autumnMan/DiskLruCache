@@ -18,6 +18,10 @@ public abstract class PriorityFile implements Comparable<PriorityFile>{
         this.fileStrategy = fileCacheStrategy;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     public long fileSize() {
         return file.length();
     }

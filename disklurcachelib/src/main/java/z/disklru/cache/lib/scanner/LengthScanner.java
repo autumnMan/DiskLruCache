@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import z.disklru.cache.lib.scanner.file.LengthLevelFile;
 import z.disklru.cache.lib.scanner.file.PriorityFile;
 import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
+import z.disklru.cache.lib.scanner.strategy.FileSizeOverFlowStrategy;
 
 /**
  * Created by Administrator on 2017/2/27.
@@ -13,8 +14,8 @@ import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
 public class LengthScanner extends AbsScanner {
     private static PriorityQueue<PriorityFile> priorityQueue = new PriorityQueue<>();
 
-    public LengthScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy) {
-        super(cacheDir, maxSize, fileStrategy, priorityQueue);
+    public LengthScanner(String cacheDir, int maxSize, FileCacheStrategy fileStrategy, FileSizeOverFlowStrategy fileSizeOverFlowStrategy) {
+        super(cacheDir, maxSize, fileStrategy, fileSizeOverFlowStrategy, priorityQueue);
     }
 
     @Override

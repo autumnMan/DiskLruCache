@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.PriorityQueue;
 
 import z.disklru.cache.lib.core.BaseTestCase;
-import z.disklru.cache.lib.scanner.file.TimeLevelFile;
 import z.disklru.cache.lib.scanner.strategy.DefFileStrategy;
 import z.disklru.cache.lib.scanner.strategy.FileCacheStrategy;
 
@@ -24,7 +23,7 @@ public class TimeLevelFileTest extends BaseTestCase {
         for (int i = 0; i < 100; ++i) {
             final DefFileStrategy fileStrategy = Mockito.mock(DefFileStrategy.class);
             Mockito.when(fileStrategy.importantLevel(Mockito.any(File.class)))
-                    .thenReturn((int) (Math.random() * (FileCacheStrategy.DO_NOT_CARE + 1)));
+                    .thenReturn((int) (Math.random() * (FileCacheStrategy.NORMAL + 1)));
 
             final TimeLevelFile timeLevelFile = Mockito.spy(new TimeLevelFile(new File("I am " + i), fileStrategy));
             Mockito.when(timeLevelFile.lastModifyTime())
